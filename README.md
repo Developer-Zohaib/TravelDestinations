@@ -9,7 +9,7 @@ A beautifully crafted demo app built with **SwiftUI** that showcases modern iOS 
 This project was built to demonstrate:
 - Clean UI with responsive layout using SwiftUI
 - Real-time data handling with Firebase Firestore
-- Modular and maintainable architecture using MVVM
+- Modular and maintainable architecture using MVC
 - Code reusability through Swift Generics
 - Native framework integration (MapKit, AVKit)
 
@@ -53,14 +53,8 @@ This app uses:
 - **Firebase Firestore**
 - **MapKit** (Location & Maps)
 - **AVKit** (Video playback)
-- **MVVM Architecture**
+- **MVC Architecture**
 - **Generics & Computed Properties**
-
----
-
-## 📦 Project Structure
-
-📁 TravelDestinations ┣ 📁 Models ┣ 📁 Views ┣ 📁 ViewModels ┣ 📁 Components ┗ 📄 TravelDestinationsApp.swift
 
 ---
 
@@ -80,7 +74,7 @@ To run the project locally:
 
 - Utilized **SwiftUI** for building fast, declarative UI
 - Integrated **Firebase Firestore** for real-time, cloud-hosted content
-- Implemented **MVVM** for better code separation and reusability
+- Implemented **MVC** for better code separation and reusability
 - Applied **Swift Generics** and **computed properties** to reduce redundancy
 - Showcased multiple **native Apple frameworks** working in harmony
 
