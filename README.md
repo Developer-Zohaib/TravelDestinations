@@ -14,8 +14,6 @@ Travel Destination: App made with SwiftUI for iOS and macOS using macOS catalyst
 
 - # App UI:
 
-## iPhone:
-
 ### Screenshots:
 
 <img src="https://github.com/user-attachments/assets/c2405283-6365-48ea-bf77-7dfedee33ae5" width="150" />
