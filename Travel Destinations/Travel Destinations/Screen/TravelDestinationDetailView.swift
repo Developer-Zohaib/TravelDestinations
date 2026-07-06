@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Kingfisher
 
 struct TravelDestinationDetailView: View {
     
@@ -18,16 +17,11 @@ struct TravelDestinationDetailView: View {
                 
                 VStack(alignment: .center, spacing: 20) {
                     
-                    if let url = URL(string: travelDestination.image) {
-                        KFImage(url)
-                            .placeholder {
-                                ProgressView()
-                            }
-                            .resizable()
-                            .scaledToFit()
+                    if let url = travelDestination.displayImageURL {
+                        RemoteImageView(url: url, contentMode: .fit)
                         
                     } else {
-                        Text("Invalid URL")
+                        ContentUnavailableView("Image Unavailable", systemImage: "photo")
                     }
                     
                     Text(travelDestination.name.uppercased())

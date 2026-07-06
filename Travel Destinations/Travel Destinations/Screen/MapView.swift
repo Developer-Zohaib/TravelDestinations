@@ -10,8 +10,7 @@ import MapKit
 
 struct MapView: View {
     @EnvironmentObject private var firestoreService: FirestoreService
-    @State private var isLoading: Bool = false
-    @State private var worldLocationData: [WorldLocation] = []
+    @State private var viewState: ViewState<[WorldLocation]> = .idle
     
     @State private var mapCameraPostion = MapCameraPosition.region(
         MKCoordinateRegion(
@@ -32,7 +31,7 @@ struct MapView: View {
         
         Map(position: $mapCameraPostion) {
             
-            ForEach(worldLocationData) { location in
+            ForEach(worldLocationData, id: \.id) { location in
                 
                 Annotation(location.name, coordinate: location.location) {
                     
@@ -78,9 +77,6 @@ struct MapView: View {
                     }
                   }
             }
-                .onAppear {
-                    fetchMapData()
-                }
                 .padding(.vertical, 12)
                 .padding(.horizontal, 16)
                 .background(
@@ -93,18 +89,37 @@ struct MapView: View {
                 .padding()
             , alignment: .top
         )
+        .task {
+            await fetchMapDataIfNeeded()
+        }
     }
     
-    private func fetchMapData() {
-        isLoading = true
-        firestoreService.fetchData(collection: "TravelMapLocations") { (result: Result<[WorldLocation], Error>) in
-            isLoading = false
-            switch result {
-            case .success(let worldLocationData):
-                self.worldLocationData = worldLocationData
-            case .failure(let error):
-                print("Error fetching documents: \(error.localizedDescription)")
-            }
+    private var worldLocationData: [WorldLocation] {
+        if case .loaded(let locations) = viewState {
+            return locations
+        }
+        
+        return []
+    }
+    
+    @MainActor
+    private func fetchMapDataIfNeeded() async {
+        guard viewState.shouldPerformInitialLoad else {
+            return
+        }
+
+        await fetchMapData()
+    }
+
+    @MainActor
+    private func fetchMapData() async {
+        viewState = .loading
+        
+        do {
+            let locations: [WorldLocation] = try await firestoreService.fetchData(collection: "TravelMapLocations")
+            viewState = .loaded(locations)
+        } catch {
+            viewState = .failed(error.localizedDescription)
         }
     }
 }

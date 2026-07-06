@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Kingfisher
 
 struct InsetGalleryView: View {
     
@@ -18,28 +17,12 @@ struct InsetGalleryView: View {
             
             HStack(alignment: .center, spacing: 15 ) {
                 
-                ForEach(travelDestination.gallery, id: \.self) { image in
-                    if let url = URL(string: image) {
-                        KFImage(url)
-                            .placeholder {
-                                ProgressView()
-                            }
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 200)
-                            .clipShape(
-                                RoundedRectangle(cornerRadius: 12)
-                            )
-                            .onAppear {
-                                print("Image successfully loaded: \(url.absoluteString)")
-                            }
-                            .onTapGesture {
-                                print("Image tapped")
-                            }
-                        
-                    } else {
-                        Text("Invalid URL")
-                    }
+                ForEach(Array(travelDestination.displayGalleryURLs.enumerated()), id: \.offset) { _, url in
+                    RemoteImageView(url: url, contentMode: .fit)
+                        .frame(height: 200)
+                        .clipShape(
+                            RoundedRectangle(cornerRadius: 12)
+                        )
 
                 }
             }

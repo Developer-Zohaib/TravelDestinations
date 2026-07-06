@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Kingfisher
 
 struct MapAnnotationView: View {
     
@@ -28,18 +27,16 @@ struct MapAnnotationView: View {
                 .scaleEffect(1 + CGFloat(animation))
                 .opacity(1 - animation)
             
-            if let url = URL(string: location.image) {
-                KFImage(url)
-                    .placeholder {
-                        ProgressView()
-                    }
-                    .resizable()
-                    .scaledToFit()
+            if let url = location.displayImageURL {
+                RemoteImageView(url: url, contentMode: .fill, placeholderSystemImage: "mappin")
                     .frame(width: 48, height: 48, alignment: .center)
                     .clipShape(Circle())
                 
             } else {
-                Text("Invalid URL")
+                Image(systemName: "mappin")
+                    .frame(width: 48, height: 48, alignment: .center)
+                    .background(.quaternary)
+                    .clipShape(Circle())
             }
         }
         .onAppear {

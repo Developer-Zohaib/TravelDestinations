@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Kingfisher
 
 struct TravelDestinationListItemView: View {
     
@@ -15,26 +14,18 @@ struct TravelDestinationListItemView: View {
     var body: some View {
         
         HStack(alignment: .center, spacing: 16) {
-            if let url = URL(string: travelDestination.image) {
-                KFImage(url)
-                    .placeholder {
-                        ProgressView()
-                    }
-                    .resizable()
-                    .scaledToFill()
+            if let url = travelDestination.displayImageURL {
+                RemoteImageView(url: url, contentMode: .fill)
                     .frame(width: 90, height: 90)
                     .clipShape(
                         RoundedRectangle(cornerRadius: 12)
                     )
-                    .onAppear {
-                        print("Image successfully loaded: \(url.absoluteString)")
-                    }
-                    .onTapGesture {
-                        print("Image tapped")
-                    }
                 
             } else {
-                Text("Invalid URL")
+                Image(systemName: "photo")
+                    .frame(width: 90, height: 90)
+                    .background(.quaternary)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             
             VStack(alignment: .leading, spacing: 8) {

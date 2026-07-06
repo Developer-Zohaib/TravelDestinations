@@ -7,7 +7,7 @@
 
 import MapKit
 
-struct WorldLocation : Codable, Identifiable {
+struct WorldLocation: Codable, Hashable, Identifiable {
     let id: String
     let name: String
     let image: String
@@ -17,5 +17,9 @@ struct WorldLocation : Codable, Identifiable {
     // Computed Property
      var location: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+    
+    var displayImageURL: URL? {
+        DemoImageProvider.destinationImageURL(for: name, original: image)
     }
 }

@@ -6,18 +6,16 @@
 //
 
 import SwiftUI
-import Kingfisher
 
 struct GalleryView: View {
     
-    @State private var selectedDestination = ""
+    @State private var selectedDestination: URL?
     
     //Dynamic grid layout
     @State private var gridLayout = [GridItem(.flexible())]
     @State private var gridColumn = 3.0
-    @State private var isLoading: Bool = true
+    @State private var viewState: ViewState<[TravelGalleryCollectionModel]> = .idle
     @EnvironmentObject private var firestoreService: FirestoreService
-    @State private var travelGalleryCollection: [TravelGalleryCollectionModel] = []
     
     let hapticFeedBack = UINotificationFeedbackGenerator()
     
@@ -27,15 +25,27 @@ struct GalleryView: View {
     
     var body: some View {
         ZStack {
+            content
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(MotionAnimationView())
+            .task {
+                await fetchTravelGalleryCollectionIfNeeded()
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var content: some View {
+        switch viewState {
+        case .idle, .loading:
+            ProgressView("Loading...")
+        case .loaded(let travelGalleryCollection):
+            let galleryURLs = travelGalleryCollection.first?.displayGalleryURLs ?? DemoImageProvider.galleryURLs(for: "travel")
+            
             ScrollView(.vertical) {
                 VStack(alignment: .center, spacing: 30) {
-                    if let url = URL(string: selectedDestination) {
-                        KFImage(url)
-                            .placeholder {
-                                ProgressView()
-                            }
-                            .resizable()
-                            .scaledToFill()
+                    if let selectedDestination {
+                        RemoteImageView(url: selectedDestination, contentMode: .fill)
                             .frame(width: 300, height: 300)
                             .clipShape(Circle())
                             .overlay(
@@ -43,7 +53,7 @@ struct GalleryView: View {
                                     .stroke(Color.white, lineWidth: 8)
                             )
                     } else {
-                        Text("Invalid URL")
+                        ContentUnavailableView("Image Unavailable", systemImage: "photo")
                     }
                     
                     Slider(value: $gridColumn, in: 2...4)
@@ -54,66 +64,75 @@ struct GalleryView: View {
                             }
                         }
                     
-                    if let gallery = travelGalleryCollection.first?.gallery {
-                        LazyVGrid(columns: gridLayout, alignment: .center, spacing: 10) {
-                            ForEach(gallery, id: \.self) { imageurl in
-                                if let url = URL(string: imageurl) {
-                                    KFImage(url)
-                                        .placeholder {
-                                            ProgressView()
-                                        }
-                                        .resizable()
-                                        .scaledToFit()
-                                        .clipShape(Circle())
-                                        .overlay(
-                                            Circle().stroke(Color.white, lineWidth: 1)
-                                        )
-                                        .frame(width: 150, height: 150)
-                                        .onTapGesture {
-                                            hapticFeedBack.notificationOccurred(.success)
-                                            selectedDestination = imageurl
-                                        }
-                                } else {
-                                    Text("Invalid URL")
+                    LazyVGrid(columns: gridLayout, alignment: .center, spacing: 10) {
+                        ForEach(Array(galleryURLs.enumerated()), id: \.offset) { _, url in
+                            RemoteImageView(url: url, contentMode: .fill)
+                                .clipShape(Circle())
+                                .overlay(
+                                    Circle().stroke(Color.white, lineWidth: 1)
+                                )
+                                .frame(width: 150, height: 150)
+                                .onTapGesture {
+                                    hapticFeedBack.notificationOccurred(.success)
+                                    selectedDestination = url
                                 }
-                            }
-                        }
-                        .onAppear {
-                            gridSwitch()
                         }
                     }
-                    
+                    .onAppear {
+                        gridSwitch()
+                        selectedDestination = selectedDestination ?? galleryURLs.first
+                    }
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 50)
             }
             .refreshable {
-                fetchTravelGalleryCollection()
+                await fetchTravelGalleryCollection(shouldShowLoading: false)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(MotionAnimationView())
-            
-            if isLoading {
-                // Loading overlay
-                ProgressView("Loading...")
-                    .onAppear {
-                        fetchTravelGalleryCollection()
+        case .failed(let message):
+            ContentUnavailableView {
+                Label("Unable to Load Gallery", systemImage: "photo.on.rectangle.angled")
+            } description: {
+                Text(message)
+            } actions: {
+                Button("Try Again") {
+                    Task {
+                        await fetchTravelGalleryCollection()
                     }
+                }
             }
         }
     }
     
-    private func fetchTravelGalleryCollection() {
-        isLoading = true
-        firestoreService.fetchData(collection: "TravelGalleryCollection") { (result: Result<[TravelGalleryCollectionModel], Error>) in
-            isLoading = false
-            switch result {
-            case .success(let travelGalleryCollection):
-                self.travelGalleryCollection = travelGalleryCollection
-                selectedDestination = self.travelGalleryCollection.first?.gallery.first ?? ""
-                
-            case .failure(let error):
-                print("Error fetching documents: \(error.localizedDescription)")
+    @MainActor
+    private func fetchTravelGalleryCollectionIfNeeded() async {
+        guard viewState.shouldPerformInitialLoad else {
+            return
+        }
+
+        await fetchTravelGalleryCollection()
+    }
+
+    @MainActor
+    private func fetchTravelGalleryCollection(shouldShowLoading: Bool = true) async {
+        let existingGalleryCollection = viewState.loadedValue
+
+        if shouldShowLoading, existingGalleryCollection == nil {
+            viewState = .loading
+        }
+        
+        do {
+            let galleryCollection: [TravelGalleryCollectionModel] = try await firestoreService.fetchData(collection: "TravelGalleryCollection")
+            if selectedDestination == nil || existingGalleryCollection == nil {
+                selectedDestination = galleryCollection.first?.displayGalleryURLs.first ?? DemoImageProvider.galleryURLs(for: "travel").first
+            }
+            viewState = .loaded(galleryCollection)
+        } catch {
+            if let existingGalleryCollection {
+                viewState = .loaded(existingGalleryCollection)
+            } else {
+                selectedDestination = DemoImageProvider.galleryURLs(for: "travel").first
+                viewState = .loaded([])
             }
         }
     }

@@ -6,32 +6,28 @@
 //
 
 import SwiftUI
-import Kingfisher
 
 struct VideoListItemView: View {
     
     let video: Video
-    @State private var isLoading: Bool = true
 
     var body: some View {
         
         HStack(spacing: 10) {
             ZStack {
                 
-                if let url = URL(string: video.thumbnail) {
-                    KFImage(url)
-                        .placeholder {
-                            ProgressView()
-                        }
-                        .resizable()
-                        .scaledToFit()
+                if let url = video.displayThumbnailURL {
+                    RemoteImageView(url: url, contentMode: .fit, placeholderSystemImage: "video")
                         .frame(height: 80)
                         .clipShape(
                             RoundedRectangle(cornerRadius: 9)
                         )
                     
                 } else {
-                    Text("Invalid URL")
+                    Image(systemName: "video")
+                        .frame(width: 120, height: 80)
+                        .background(.quaternary)
+                        .clipShape(RoundedRectangle(cornerRadius: 9))
                 }
                     
                 Image(systemName: "play.circle")

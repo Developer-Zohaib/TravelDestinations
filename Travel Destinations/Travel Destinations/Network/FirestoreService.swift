@@ -32,6 +32,14 @@ class FirestoreService: ObservableObject {
         }
     }
     
+    func fetchData<T: Decodable>(collection: String) async throws -> [T] {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchData(collection: collection) { (result: Result<[T], Error>) in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    
     // Add or update data in Firestore
     func saveData<T: Encodable>(collection: String, data: T, id: String? = nil, completion: @escaping (Result<Void, Error>) -> Void) {
         do {
@@ -55,5 +63,30 @@ class FirestoreService: ObservableObject {
                 completion(.success(()))
             }
         }
+    }
+}
+
+enum ViewState<Value> {
+    case idle
+    case loading
+    case loaded(Value)
+    case failed(String)
+}
+
+extension ViewState {
+    var loadedValue: Value? {
+        guard case .loaded(let value) = self else {
+            return nil
+        }
+
+        return value
+    }
+
+    var shouldPerformInitialLoad: Bool {
+        if case .idle = self {
+            return true
+        }
+
+        return false
     }
 }

@@ -11,14 +11,13 @@ struct ContentView: View {
     
     @State private var isGridViewActive = false
     
-    //Dynamic grid layout
+    // Dynamic grid layout
     @State private var gridLayout = [GridItem(.flexible())]
     @State private var gridColumn = 2
     @State private var toolbarIcon = "square.grid.2x2"
-    @State private var images: [String: UIImage] = [:]
-    @State private var isLoading: Bool = false
+    @State private var viewState: ViewState<[TravelDestination]> = .idle
     @EnvironmentObject private var firestoreService: FirestoreService
-    @State private var travelDestinations: [TravelDestination] = []
+    
     let hapticFeedBack = UINotificationFeedbackGenerator()
     
     func gridSwitch() {
@@ -42,85 +41,146 @@ struct ContentView: View {
     }
     
     var body: some View {
-        NavigationView {
-            Group {
-                if isLoading {
-                    ProgressView("Loading...")
-                } else {
-                    if !isGridViewActive {
-                        ListView(travelDestinations: travelDestinations, images: images)
-                            .refreshable {
-                                fetchTravelDestinations()
-                            }
-                    } else {
-                        GridView(travelDestinations: travelDestinations, images: images, gridLayout: gridLayout)
-                            .refreshable {
-                                fetchTravelDestinations()
-                            }
+        NavigationStack {
+            content
+                .navigationTitle("Travel Destinations")
+                .navigationBarTitleDisplayMode(.large)
+                .navigationDestination(for: TravelDestination.self) { destination in
+                    TravelDestinationDetailView(travelDestination: destination)
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        HStack(spacing: 16) {
+                            Button(action: {
+                                withoutContentAnimation {
+                                    isGridViewActive = false
+                                }
+                                hapticFeedBack.notificationOccurred(.success)
+                            }, label: {
+                                Image(systemName: "square.fill.text.grid.1x2")
+                                    .font(.title2)
+                                    .foregroundColor(isGridViewActive ? .primary : .accentColor)
+                            })
+                            
+                            Button(action: {
+                                hapticFeedBack.notificationOccurred(.success)
+
+                                if isGridViewActive {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        gridSwitch()
+                                    }
+                                } else {
+                                    withoutContentAnimation {
+                                        isGridViewActive = true
+                                    }
+                                }
+                            }, label: {
+                                Image(systemName: toolbarIcon)
+                                    .font(.title2)
+                                    .foregroundColor(isGridViewActive ? .accentColor : .primary)
+                            })
+                        }
                     }
                 }
-            }
-            .navigationTitle("Travel Destinations")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack(spacing: 16) {
-                        Button(action: {
-                            isGridViewActive = false
-                            hapticFeedBack.notificationOccurred(.success)
-                        }, label: {
-                            Image(systemName: "square.fill.text.grid.1x2")
-                                .font(.title2)
-                                .foregroundColor(isGridViewActive ? .primary : .accentColor)
-                        })
-                        
-                        Button(action: {
-                            isGridViewActive = true
-                            hapticFeedBack.notificationOccurred(.success)
-                            withAnimation(.easeIn) {
-                                gridSwitch()
-                            }
-                        }, label: {
-                            Image(systemName: toolbarIcon)
-                                .font(.title2)
-                                .foregroundColor(isGridViewActive ? .accentColor : .primary)
-                        })
-                    }
+                .task {
+                    await fetchTravelDestinationsIfNeeded()
                 }
+        }
+    }
+
+    private func withoutContentAnimation(_ updates: () -> Void) {
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+
+        withTransaction(transaction) {
+            updates()
+        }
+    }
+
+    private func prefetchDestinationImages(for destinations: [TravelDestination]) {
+        let urls = destinations.compactMap(\.displayImageURL)
+
+        Task(priority: .utility) {
+            await ImagePipeline.shared.prefetch(urls)
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch viewState {
+        case .idle, .loading:
+            ProgressView("Loading...")
+        case .loaded(let travelDestinations):
+            if travelDestinations.isEmpty {
+                ContentUnavailableView(
+                    "No Destinations",
+                    systemImage: "airplane.departure",
+                    description: Text("Pull to refresh or check your data source.")
+                )
+            } else if !isGridViewActive {
+                ListView(travelDestinations: travelDestinations)
+                    .refreshable {
+                        await fetchTravelDestinations(shouldShowLoading: false)
+                    }
+            } else {
+                GridView(travelDestinations: travelDestinations, gridLayout: gridLayout)
+                    .refreshable {
+                        await fetchTravelDestinations(shouldShowLoading: false)
+                    }
             }
-            .onAppear {
-                if travelDestinations.isEmpty {
-                    fetchTravelDestinations()
-                } else {
-                    isLoading = false
+        case .failed(let message):
+            ContentUnavailableView {
+                Label("Unable to Load Destinations", systemImage: "wifi.exclamationmark")
+            } description: {
+                Text(message)
+            } actions: {
+                Button("Try Again") {
+                    Task {
+                        await fetchTravelDestinations()
+                    }
                 }
             }
         }
     }
-    
-    private func fetchTravelDestinations() {
-        isLoading = true
-        firestoreService.fetchData(collection: "TravelDestinations") { (result: Result<[TravelDestination], Error>) in
-            isLoading = false
-            switch result {
-            case .success(let travelDestinations):
-                self.travelDestinations = travelDestinations
-            case .failure(let error):
-                print("Error fetching documents: \(error.localizedDescription)")
+
+    @MainActor
+    private func fetchTravelDestinationsIfNeeded() async {
+        guard viewState.shouldPerformInitialLoad else {
+            return
+        }
+
+        await fetchTravelDestinations()
+    }
+
+    @MainActor
+    private func fetchTravelDestinations(shouldShowLoading: Bool = true) async {
+        let existingDestinations = viewState.loadedValue
+
+        if shouldShowLoading, existingDestinations == nil {
+            viewState = .loading
+        }
+        
+        do {
+            let destinations: [TravelDestination] = try await firestoreService.fetchData(collection: "TravelDestinations")
+            viewState = .loaded(destinations)
+            prefetchDestinationImages(for: destinations)
+        } catch {
+            if let existingDestinations {
+                viewState = .loaded(existingDestinations)
+            } else {
+                viewState = .failed(error.localizedDescription)
             }
         }
     }
 }
 
-
 struct ListView: View {
     let travelDestinations: [TravelDestination]
-    let images: [String: UIImage]
     
     var body: some View {
         List {
-            ForEach(travelDestinations) { destination in
-                NavigationLink(destination: TravelDestinationDetailView(travelDestination: destination)) {
+            ForEach(travelDestinations, id: \.id) { destination in
+                NavigationLink(value: destination) {
                     TravelDestinationListItemView(travelDestination: destination)
                 }
                 .listRowBackground(Color.clear)
@@ -132,14 +192,13 @@ struct ListView: View {
 
 struct GridView: View {
     let travelDestinations: [TravelDestination]
-    let images: [String: UIImage]
     let gridLayout: [GridItem]
     
     var body: some View {
         ScrollView(.vertical) {
             LazyVGrid(columns: gridLayout, alignment: .center, spacing: 10) {
-                ForEach(travelDestinations) { destination in
-                    NavigationLink(destination: TravelDestinationDetailView(travelDestination: destination)) {
+                ForEach(travelDestinations, id: \.id) { destination in
+                    NavigationLink(value: destination) {
                         TravelDestinationGridItemView(travelDestination: destination)
                     }
                 }
