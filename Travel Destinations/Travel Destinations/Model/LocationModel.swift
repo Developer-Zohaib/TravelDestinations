@@ -20,6 +20,6 @@ struct WorldLocation: Codable, Hashable, Identifiable {
     }
     
     var displayImageURL: URL? {
-        DemoImageProvider.destinationImageURL(for: name, original: image)
+        DemoImageProvider.destinationImageURL(for: name, original: "")
     }
 }

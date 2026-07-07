@@ -44,51 +44,61 @@ struct MapView: View {
             latitude = $0.region.center.latitude
             longitude = $0.region.center.longitude
         })
-        .overlay(
-            HStack(alignment: .center, spacing: 12) {
-                Image("compass")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 50, height: 50, alignment: .center)
-                
-                VStack(alignment: .leading, spacing: 3) {
-                    HStack {
-                      Text("Latitude:")
-                        .font(.footnote)
-                        .fontWeight(.bold)
-                        .foregroundColor(.accentColor)
-                      Spacer()
-                        Text("\(latitude)")
-                        .font(.footnote)
-                        .foregroundColor(.white)
+        .overlay(alignment: .top) {
+            VStack(alignment: .leading, spacing: 12) {
+                AppHeaderView(title: "Map", highlightedTitle: " Locations")
+
+                HStack(alignment: .center, spacing: 12) {
+                    Image("compass")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 50, height: 50, alignment: .center)
+
+                    VStack(alignment: .leading, spacing: 3) {
+                        HStack {
+                            Text("Latitude:")
+                                .font(.footnote)
+                                .fontWeight(.bold)
+                                .foregroundColor(AppTheme.accent)
+                            Spacer()
+                            Text("\(latitude)")
+                                .font(.footnote)
+                                .foregroundColor(AppTheme.primaryText)
+                        }
+
+                        Divider()
+
+                        HStack {
+                            Text("Longitude:")
+                                .font(.footnote)
+                                .fontWeight(.bold)
+                                .foregroundColor(AppTheme.accent)
+                            Spacer()
+                            Text("\(longitude)")
+                                .font(.footnote)
+                                .foregroundColor(AppTheme.primaryText)
+                        }
                     }
-                    
-                    Divider()
-                    
-                    HStack {
-                      Text("Longitude:")
-                        .font(.footnote)
-                        .fontWeight(.bold)
-                        .foregroundColor(.accentColor)
-                      Spacer()
-                        Text("\(longitude)")
-                        .font(.footnote)
-                        .foregroundColor(.white)
-                    }
-                  }
-            }
+                }
                 .padding(.vertical, 12)
                 .padding(.horizontal, 16)
-                .background(
-                    Color.black
-                        .clipShape(
-                            RoundedRectangle(cornerRadius: 8)
-                        )
-                        .opacity(0.6)
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 18))
+                .overlay(RoundedRectangle(cornerRadius: 18).stroke(AppTheme.softBorder))
+            }
+            .padding(.horizontal, 18)
+            .padding(.top, 24)
+        }
+        .overlay {
+            if viewState.shouldShowLoader {
+                AppLoadingView(
+                    title: "Finding Locations",
+                    message: "Placing destination pins on the map"
                 )
-                .padding()
-            , alignment: .top
-        )
+                .padding(.horizontal, 28)
+                .transition(.opacity.combined(with: .scale(scale: 0.96)))
+            }
+        }
         .task {
             await fetchMapDataIfNeeded()
         }
@@ -118,8 +128,17 @@ struct MapView: View {
         do {
             let locations: [WorldLocation] = try await firestoreService.fetchData(collection: "TravelMapLocations")
             viewState = .loaded(locations)
+            prefetchLocationImages(for: locations)
         } catch {
             viewState = .failed(error.localizedDescription)
+        }
+    }
+
+    private func prefetchLocationImages(for locations: [WorldLocation]) {
+        let urls = locations.compactMap(\.displayImageURL)
+
+        Task(priority: .utility) {
+            await ImagePipeline.shared.prefetch(urls)
         }
     }
 }

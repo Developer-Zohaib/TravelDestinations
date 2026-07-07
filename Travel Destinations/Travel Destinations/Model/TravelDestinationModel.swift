@@ -33,7 +33,7 @@ extension TravelDestination {
 }
 
 enum DemoImageProvider {
-    private static let imageKitBaseURL = "https://ik.imagekit.io/zohaibafzal/travel-destinations"
+    private static let imageKitBaseURL = "https://ik.imagekit.io/zohaibafzal/TravelDestinations"
 
     private static let destinationIDs: [String: String] = [
         "tokyo": "tokyo",
@@ -46,6 +46,17 @@ enum DemoImageProvider {
         "bora bora": "borabora",
         "borabora": "borabora",
         "maldives": "maldives"
+    ]
+
+    private static let destinationFolders: [String: String] = [
+        "tokyo": "Tokyo",
+        "sydney": "Sydney",
+        "rome": "Rome",
+        "santorini": "Santorini",
+        "glaciernationalpark": "Glacier National Park",
+        "paris": "Paris",
+        "borabora": "Bora Bora",
+        "maldives": "Maldives"
     ]
 
     private static let destinationFallbacks: [String: String] = [
@@ -119,7 +130,12 @@ enum DemoImageProvider {
     }
 
     private static func imageKitURL(destinationID: String, filename: String) -> URL? {
-        URL(string: "\(imageKitBaseURL)/\(destinationID)/\(filename)")
+        guard let folder = destinationFolders[destinationID] else {
+            return nil
+        }
+
+        let encodedFolder = folder.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? folder
+        return URL(string: "\(imageKitBaseURL)/\(encodedFolder)/\(filename)")
     }
 
     private static func imageKitURL(fromLegacyFirebaseURL string: String, destinationName: String?) -> URL? {

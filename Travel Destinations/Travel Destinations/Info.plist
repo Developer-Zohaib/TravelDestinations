@@ -4,6 +4,8 @@
 <dict>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Travel Destinations saves rendered stickers to your photo library when you choose Save to Gallery.</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

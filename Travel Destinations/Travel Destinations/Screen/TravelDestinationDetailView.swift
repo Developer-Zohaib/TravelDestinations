@@ -65,7 +65,7 @@ struct TravelDestinationDetailView: View {
                     Group {
                         HeadingView(headingImage: "map", headingText: "Map Locations")
                         
-                        InsetMapView()
+                        InsetMapView(travelDestination: travelDestination)
                     }
                     .padding(.horizontal)
                     
@@ -79,6 +79,7 @@ struct TravelDestinationDetailView: View {
                 }
             }
             .scrollIndicators(.hidden)
+            .background(AppTheme.appGradient)
             .navigationTitle("Learn about \(travelDestination.name)")
             .navigationBarTitleDisplayMode(.inline)
     }

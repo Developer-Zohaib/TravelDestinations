@@ -63,7 +63,7 @@ struct RemoteImageView: View {
         ZStack {
             switch loader.state {
             case .idle, .loading:
-                ProgressView()
+                ImageLoadingPlaceholder(systemImage: placeholderSystemImage)
             case .loaded(let image):
                 Image(uiImage: image)
                     .resizable()

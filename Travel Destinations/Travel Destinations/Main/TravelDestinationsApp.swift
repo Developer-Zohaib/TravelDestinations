@@ -12,8 +12,9 @@ import FirebaseCore
 struct TravelDestinationsApp: App {
     
     init() {
-           FirebaseApp.configure()
-       }
+        FirebaseApp.configure()
+        AppTheme.configureAppearance()
+    }
     
     var body: some Scene {
         WindowGroup {

@@ -19,68 +19,61 @@ struct ContentView: View {
     @EnvironmentObject private var firestoreService: FirestoreService
     
     let hapticFeedBack = UINotificationFeedbackGenerator()
-    
-    func gridSwitch() {
-        gridLayout = Array(repeating: GridItem(.flexible()), count: (gridLayout.count % 3) + 1)
-        gridColumn = gridLayout.count
-        
-        switch gridColumn {
-            
+
+    private var browseLayoutIcon: String {
+        isGridViewActive ? toolbarIcon : "rectangle.grid.1x2"
+    }
+
+    private var browseLayoutTint: Color {
+        isGridViewActive ? AppTheme.accent : AppTheme.secondaryText
+    }
+
+    private func setGridColumn(_ count: Int) {
+        gridColumn = count
+        gridLayout = Array(repeating: GridItem(.flexible()), count: count)
+
+        switch count {
         case 1:
-            toolbarIcon = "square.grid.2x2"
-            
-        case 2:
-            toolbarIcon = "square.grid.3x2"
-            
-        case 3:
             toolbarIcon = "rectangle.grid.1x2"
-            
+        case 2:
+            toolbarIcon = "square.grid.2x2"
+        case 3:
+            toolbarIcon = "square.grid.3x2"
         default:
             toolbarIcon = "square.grid.2x2"
+        }
+    }
+
+    func gridSwitch() {
+        setGridColumn((gridLayout.count % 3) + 1)
+    }
+
+    private func advanceBrowseLayout() {
+        hapticFeedBack.notificationOccurred(.success)
+
+        if !isGridViewActive {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                setGridColumn(1)
+                isGridViewActive = true
+            }
+        } else if gridColumn >= 3 {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isGridViewActive = false
+            }
+        } else {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                setGridColumn(gridColumn + 1)
+            }
         }
     }
     
     var body: some View {
         NavigationStack {
             content
-                .navigationTitle("Travel Destinations")
-                .navigationBarTitleDisplayMode(.large)
+                .toolbar(.hidden, for: .navigationBar)
+                .background(AppTheme.appGradient.ignoresSafeArea())
                 .navigationDestination(for: TravelDestination.self) { destination in
                     TravelDestinationDetailView(travelDestination: destination)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        HStack(spacing: 16) {
-                            Button(action: {
-                                withoutContentAnimation {
-                                    isGridViewActive = false
-                                }
-                                hapticFeedBack.notificationOccurred(.success)
-                            }, label: {
-                                Image(systemName: "square.fill.text.grid.1x2")
-                                    .font(.title2)
-                                    .foregroundColor(isGridViewActive ? .primary : .accentColor)
-                            })
-                            
-                            Button(action: {
-                                hapticFeedBack.notificationOccurred(.success)
-
-                                if isGridViewActive {
-                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                        gridSwitch()
-                                    }
-                                } else {
-                                    withoutContentAnimation {
-                                        isGridViewActive = true
-                                    }
-                                }
-                            }, label: {
-                                Image(systemName: toolbarIcon)
-                                    .font(.title2)
-                                    .foregroundColor(isGridViewActive ? .accentColor : .primary)
-                            })
-                        }
-                    }
                 }
                 .task {
                     await fetchTravelDestinationsIfNeeded()
@@ -109,7 +102,10 @@ struct ContentView: View {
     private var content: some View {
         switch viewState {
         case .idle, .loading:
-            ProgressView("Loading...")
+            AppLoadingView(
+                title: "Preparing Destinations",
+                message: "Curating your travel feed"
+            )
         case .loaded(let travelDestinations):
             if travelDestinations.isEmpty {
                 ContentUnavailableView(
@@ -117,16 +113,8 @@ struct ContentView: View {
                     systemImage: "airplane.departure",
                     description: Text("Pull to refresh or check your data source.")
                 )
-            } else if !isGridViewActive {
-                ListView(travelDestinations: travelDestinations)
-                    .refreshable {
-                        await fetchTravelDestinations(shouldShowLoading: false)
-                    }
             } else {
-                GridView(travelDestinations: travelDestinations, gridLayout: gridLayout)
-                    .refreshable {
-                        await fetchTravelDestinations(shouldShowLoading: false)
-                    }
+                browseContent(for: travelDestinations)
             }
         case .failed(let message):
             ContentUnavailableView {
@@ -139,6 +127,49 @@ struct ContentView: View {
                         await fetchTravelDestinations()
                     }
                 }
+            }
+        }
+    }
+
+    private var browseHeader: some View {
+        AppHeaderView(title: "Travel", highlightedTitle: " Destinations") {
+            Button {
+                advanceBrowseLayout()
+            } label: {
+                Image(systemName: browseLayoutIcon)
+                    .font(.title2.weight(.semibold))
+                    .foregroundStyle(browseLayoutTint)
+                    .frame(width: 52, height: 52)
+                    .background(.ultraThinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .overlay(RoundedRectangle(cornerRadius: 20).stroke(AppTheme.softBorder))
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private func browseContent(for travelDestinations: [TravelDestination]) -> some View {
+        VStack(spacing: 0) {
+            browseHeader
+                .padding(.horizontal, 18)
+                .padding(.top, 24)
+                .padding(.bottom, 12)
+
+            ZStack {
+                if isGridViewActive {
+                    GridView(travelDestinations: travelDestinations, gridLayout: gridLayout)
+                        .id("grid-\(gridColumn)")
+                        .transition(.opacity.combined(with: .scale(scale: 0.98)))
+                } else {
+                    ListView(travelDestinations: travelDestinations)
+                        .id("list")
+                        .transition(.opacity.combined(with: .scale(scale: 0.98)))
+                }
+            }
+            .animation(.easeInOut(duration: 0.22), value: isGridViewActive)
+            .animation(.easeInOut(duration: 0.22), value: gridColumn)
+            .refreshable {
+                await fetchTravelDestinations(shouldShowLoading: false)
             }
         }
     }
@@ -178,15 +209,25 @@ struct ListView: View {
     let travelDestinations: [TravelDestination]
     
     var body: some View {
-        List {
-            ForEach(travelDestinations, id: \.id) { destination in
+        ScrollView(.vertical) {
+            LazyVStack(spacing: 12) {
+                ForEach(travelDestinations, id: \.id) { destination in
                 NavigationLink(value: destination) {
                     TravelDestinationListItemView(travelDestination: destination)
+                        .padding(12)
+                        .background(.ultraThinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 18))
+                        .overlay(RoundedRectangle(cornerRadius: 18).stroke(AppTheme.softBorder))
                 }
-                .listRowBackground(Color.clear)
+                .buttonStyle(.plain)
+                }
             }
+            .padding(.horizontal, 18)
+            .padding(.top, 16)
+            .padding(.bottom, 110)
         }
-        .tint(.gray)
+        .background(AppTheme.appGradient)
+        .scrollIndicators(.hidden)
     }
 }
 
@@ -203,8 +244,11 @@ struct GridView: View {
                     }
                 }
             }
-            .padding()
+            .padding(.horizontal, 18)
+            .padding(.top, 16)
+            .padding(.bottom, 110)
         }
+        .background(AppTheme.appGradient)
         .scrollIndicators(.hidden)
     }
 }

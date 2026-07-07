@@ -89,4 +89,13 @@ extension ViewState {
 
         return false
     }
+
+    var shouldShowLoader: Bool {
+        switch self {
+        case .idle, .loading:
+            return true
+        case .loaded, .failed:
+            return false
+        }
+    }
 }

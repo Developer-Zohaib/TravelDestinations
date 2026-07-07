@@ -38,9 +38,11 @@ struct MainView: View {
             GalleryView()
                 .environmentObject(firestoreService)
                 .tabItem {
-                    Image(systemName: "photo")
-                    Text("Gallery")
+                    Image(systemName: "sparkles.rectangle.stack")
+                    Text("Stickers")
                 }
         }
+        .tint(AppTheme.accent)
+        .background(AppTheme.background)
     }
 }

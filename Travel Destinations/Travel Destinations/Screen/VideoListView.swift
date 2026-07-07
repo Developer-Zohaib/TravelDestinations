@@ -14,25 +14,16 @@ struct VideoListView: View {
     let hapticFeedBack = UINotificationFeedbackGenerator()
 
     var body: some View {
-            NavigationStack {
-                content
-                    .navigationTitle("Videos")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationDestination(for: Video.self) { video in
-                        VideoPlayerView(videoData: video)
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button(action: {
-                                hapticFeedBack.notificationOccurred(.success)
-                            }, label: {
-                                Image(systemName: "arrow.2.squarepath")
-                            })
-                        }
-                    }
-                    .task {
-                        await fetchTravelVideoCollectionIfNeeded()
-                    }
+	            NavigationStack {
+	                content
+	                    .toolbar(.hidden, for: .navigationBar)
+	                    .background(AppTheme.appGradient.ignoresSafeArea())
+	                    .navigationDestination(for: Video.self) { video in
+	                        VideoPlayerView(videoData: video)
+	                    }
+	                    .task {
+	                        await fetchTravelVideoCollectionIfNeeded()
+	                    }
             }
         }
     
@@ -40,7 +31,10 @@ struct VideoListView: View {
     private var content: some View {
         switch viewState {
         case .idle, .loading:
-            ProgressView("Loading...")
+            AppLoadingView(
+                title: "Loading Travel Watch",
+                message: "Getting the latest destination videos"
+            )
         case .loaded(let travelVideoCollection):
             if travelVideoCollection.isEmpty {
                 ContentUnavailableView(
@@ -49,19 +43,28 @@ struct VideoListView: View {
                     description: Text("Pull to refresh or check your data source.")
                 )
             } else {
-                List {
-                    ForEach(travelVideoCollection, id: \.id) { video in
-                            NavigationLink(value: video) {
-                                VideoListItemView(video: video)
-                                    .padding(.vertical, 8)
+                VStack(spacing: 0) {
+                    watchHeader
+                        .padding(.horizontal, 18)
+                        .padding(.top, 24)
+                        .padding(.bottom, 12)
+
+                    List {
+                        ForEach(travelVideoCollection, id: \.id) { video in
+                                NavigationLink(value: video) {
+                                    VideoListItemView(video: video)
+                                        .padding(.vertical, 8)
+                                }
                             }
                         }
-                    }
-                    .refreshable {
-                        await fetchTravelVideoCollection(shouldShowLoading: false)
-                    }
-                    .listStyle(.insetGrouped)
-                    .tint(.gray)
+                        .refreshable {
+                            await fetchTravelVideoCollection(shouldShowLoading: false)
+                        }
+                        .listStyle(.insetGrouped)
+                        .scrollContentBackground(.hidden)
+                        .background(AppTheme.appGradient)
+                        .tint(.gray)
+                }
             }
         case .failed(let message):
             ContentUnavailableView {
@@ -76,6 +79,10 @@ struct VideoListView: View {
                 }
             }
         }
+    }
+
+    private var watchHeader: some View {
+        AppHeaderView(title: "Travel", highlightedTitle: " Watch")
     }
     
     @MainActor

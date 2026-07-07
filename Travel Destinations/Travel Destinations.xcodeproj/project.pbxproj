@@ -32,6 +32,8 @@
 		04A6CB0D2C2C6F6A00668676 /* InsetFactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A6CB0C2C2C6F6A00668676 /* InsetFactView.swift */; };
 		04A6CB0F2C2C730400668676 /* InsetMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A6CB0E2C2C730400668676 /* InsetMapView.swift */; };
 		04A6CB112C2C8E3500668676 /* ExternalWeblinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A6CB102C2C8E3500668676 /* ExternalWeblinkView.swift */; };
+		160DCD09501DB1A09E35F6AD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECDB305EB182BAF5E471BB27 /* Foundation.framework */; };
+		2F1ACD3FB581768D78B1C784 /* Travel Stickers MessagesExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9CB923238C83CE7E7245D135 /* Travel Stickers MessagesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5B666C1F2C416438003A6D6C /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 5B666C1E2C416438003A6D6C /* FirebaseAnalytics */; };
 		5B666C212C416438003A6D6C /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 5B666C202C416438003A6D6C /* FirebaseAnalyticsOnDeviceConversion */; };
 		5B666C232C416438003A6D6C /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5B666C222C416438003A6D6C /* FirebaseAnalyticsSwift */; };
@@ -67,7 +69,27 @@
 		5B9FFEAC2C6E352400B12032 /* CustomVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9FFEAB2C6E352400B12032 /* CustomVideoPlayer.swift */; };
 		5B9FFEAE2C6E352400B12032 /* RemoteImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9FFEAD2C6E352400B12032 /* RemoteImageView.swift */; };
 		5B9FFEB02C6E352400B12032 /* ImagePipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9FFEAF2C6E352400B12032 /* ImagePipeline.swift */; };
+		5B9FFEB22C6E352400B12032 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9FFEB12C6E352400B12032 /* AppTheme.swift */; };
+		5CB7DD88D979509DCDF40C95 /* borabora.png in Resources */ = {isa = PBXBuildFile; fileRef = A3A63A655348D83FBB08DF07 /* borabora.png */; };
+		6D3325F0249C55EB59D47773 /* sydney.png in Resources */ = {isa = PBXBuildFile; fileRef = B1622CCFD356AAE71A3E8EED /* sydney.png */; };
+		6E1350352DAF02B0CAB48372 /* glaciernationalpark.png in Resources */ = {isa = PBXBuildFile; fileRef = 5CF0E9B17117440D0FE7ECD1 /* glaciernationalpark.png */; };
+		7E0A2461A8998D4253266007 /* tokyo.png in Resources */ = {isa = PBXBuildFile; fileRef = F4331BD7A5BAECE83FA33648 /* tokyo.png */; };
+		8AB1B34D4C85A58ECF0CD711 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B191F54E3CA032DC880C6E88 /* MessagesViewController.swift */; };
+		9E22CDEFACA7740B9C31CDF3 /* rome.png in Resources */ = {isa = PBXBuildFile; fileRef = 09D92BFD6A7E77C6853A9350 /* rome.png */; };
+		C787C5699D329CEBA52D0F4A /* santorini.png in Resources */ = {isa = PBXBuildFile; fileRef = 2BCCCE9E6CE8BD47833CDDAE /* santorini.png */; };
+		C8CD9EC6732D9FA42CEFEB9E /* maldives.png in Resources */ = {isa = PBXBuildFile; fileRef = 15BF57F9B5459BAB0E4226D8 /* maldives.png */; };
+		D675ACD7AEDC7C02ECB7FD1D /* paris.png in Resources */ = {isa = PBXBuildFile; fileRef = 54C98FA2CC5766CFA83D0BED /* paris.png */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		74BB2D1DE1F90BCA523B4C8E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0474C3182C2C0FAC00C860A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 697224C0BE150C49D9F3D5E1;
+			remoteInfo = "Travel Stickers MessagesExtension";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		046C37872C2D5502007A0AD2 /* Embed Foundation Extensions */ = {
@@ -78,6 +100,17 @@
 			files = (
 			);
 			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3322B466EFD441F09F70A230 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				2F1ACD3FB581768D78B1C784 /* Travel Stickers MessagesExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -111,13 +144,26 @@
 		04A6CB0C2C2C6F6A00668676 /* InsetFactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetFactView.swift; sourceTree = "<group>"; };
 		04A6CB0E2C2C730400668676 /* InsetMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetMapView.swift; sourceTree = "<group>"; };
 		04A6CB102C2C8E3500668676 /* ExternalWeblinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalWeblinkView.swift; sourceTree = "<group>"; };
+		09D92BFD6A7E77C6853A9350 /* rome.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = rome.png; sourceTree = "<group>"; };
+		15BF57F9B5459BAB0E4226D8 /* maldives.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = maldives.png; sourceTree = "<group>"; };
+		2BCCCE9E6CE8BD47833CDDAE /* santorini.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = santorini.png; sourceTree = "<group>"; };
+		54C98FA2CC5766CFA83D0BED /* paris.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = paris.png; sourceTree = "<group>"; };
 		5B666C562C4166FC003A6D6C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5B737A872C4658B1007C1E4F /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
-		5B9FFEAF2C6E352400B12032 /* ImagePipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePipeline.swift; sourceTree = "<group>"; };
 		5B737A892C4658CB007C1E4F /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		5B83E7472C58DB98009CFC8F /* TravelGalleryCollectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelGalleryCollectionModel.swift; sourceTree = "<group>"; };
 		5B9FFEAB2C6E352400B12032 /* CustomVideoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVideoPlayer.swift; sourceTree = "<group>"; };
 		5B9FFEAD2C6E352400B12032 /* RemoteImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImageView.swift; sourceTree = "<group>"; };
+		5B9FFEAF2C6E352400B12032 /* ImagePipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePipeline.swift; sourceTree = "<group>"; };
+		5B9FFEB12C6E352400B12032 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		5CF0E9B17117440D0FE7ECD1 /* glaciernationalpark.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = glaciernationalpark.png; sourceTree = "<group>"; };
+		7676ADB6821ACD463D8C79CB /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9CB923238C83CE7E7245D135 /* Travel Stickers MessagesExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Travel Stickers MessagesExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3A63A655348D83FBB08DF07 /* borabora.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = borabora.png; sourceTree = "<group>"; };
+		B1622CCFD356AAE71A3E8EED /* sydney.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = sydney.png; sourceTree = "<group>"; };
+		B191F54E3CA032DC880C6E88 /* MessagesViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
+		ECDB305EB182BAF5E471BB27 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		F4331BD7A5BAECE83FA33648 /* tokyo.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = tokyo.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +202,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6869F1D9B70D84DACC91F16F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				160DCD09501DB1A09E35F6AD /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -172,6 +226,8 @@
 			children = (
 				0474C3222C2C0FAC00C860A2 /* Travel Destinations */,
 				0474C3212C2C0FAC00C860A2 /* Products */,
+				E6195BBB473BFE691F20A553 /* Frameworks */,
+				CD9A10EC559FAF1ADB286F83 /* Travel Stickers MessagesExtension */,
 			);
 			sourceTree = "<group>";
 		};
@@ -179,6 +235,7 @@
 			isa = PBXGroup;
 			children = (
 				0474C3202C2C0FAC00C860A2 /* Travel Destinations.app */,
+				9CB923238C83CE7E7245D135 /* Travel Stickers MessagesExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -246,6 +303,7 @@
 				046C37722C2D2F6C007A0AD2 /* MotionAnimationView.swift */,
 				046C37782C2D4CF1007A0AD2 /* AnimalGridItemView.swift */,
 				5B9FFEAD2C6E352400B12032 /* RemoteImageView.swift */,
+				5B9FFEB12C6E352400B12032 /* AppTheme.swift */,
 				04043D732C2D612000E85AEC /* CreditsView.swift */,
 			);
 			path = View;
@@ -262,6 +320,29 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		064607BBC5F7510E95E81574 /* Stickers */ = {
+			isa = PBXGroup;
+			children = (
+				A3A63A655348D83FBB08DF07 /* borabora.png */,
+				5CF0E9B17117440D0FE7ECD1 /* glaciernationalpark.png */,
+				15BF57F9B5459BAB0E4226D8 /* maldives.png */,
+				54C98FA2CC5766CFA83D0BED /* paris.png */,
+				09D92BFD6A7E77C6853A9350 /* rome.png */,
+				2BCCCE9E6CE8BD47833CDDAE /* santorini.png */,
+				B1622CCFD356AAE71A3E8EED /* sydney.png */,
+				F4331BD7A5BAECE83FA33648 /* tokyo.png */,
+			);
+			path = Stickers;
+			sourceTree = "<group>";
+		};
+		14293F9AF73B608F7B5EF00A /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				ECDB305EB182BAF5E471BB27 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
 		5B737A862C46588C007C1E4F /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -270,6 +351,24 @@
 				5B737A892C4658CB007C1E4F /* StorageService.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		CD9A10EC559FAF1ADB286F83 /* Travel Stickers MessagesExtension */ = {
+			isa = PBXGroup;
+			children = (
+				7676ADB6821ACD463D8C79CB /* Info.plist */,
+				B191F54E3CA032DC880C6E88 /* MessagesViewController.swift */,
+				064607BBC5F7510E95E81574 /* Stickers */,
+			);
+			path = "Travel Stickers MessagesExtension";
+			sourceTree = "<group>";
+		};
+		E6195BBB473BFE691F20A553 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				14293F9AF73B608F7B5EF00A /* iOS */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -283,10 +382,12 @@
 				0474C31D2C2C0FAC00C860A2 /* Frameworks */,
 				0474C31E2C2C0FAC00C860A2 /* Resources */,
 				046C37872C2D5502007A0AD2 /* Embed Foundation Extensions */,
+				3322B466EFD441F09F70A230 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				20E6DDB4BDE5FCD390FDD3AF /* PBXTargetDependency */,
 			);
 			name = "Travel Destinations";
 			packageProductDependencies = (
@@ -323,6 +424,23 @@
 			productReference = 0474C3202C2C0FAC00C860A2 /* Travel Destinations.app */;
 			productType = "com.apple.product-type.application";
 		};
+		697224C0BE150C49D9F3D5E1 /* Travel Stickers MessagesExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F4A6B9DD83B891FE2DB3E5DE /* Build configuration list for PBXNativeTarget "Travel Stickers MessagesExtension" */;
+			buildPhases = (
+				93988D0BBAA7CCBA4E6740FD /* Sources */,
+				6869F1D9B70D84DACC91F16F /* Frameworks */,
+				A4F88DEA754772011469B583 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Travel Stickers MessagesExtension";
+			productName = "Travel Stickers MessagesExtension";
+			productReference = 9CB923238C83CE7E7245D135 /* Travel Stickers MessagesExtension.appex */;
+			productType = "com.apple.product-type.app-extension.messages";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -355,6 +473,7 @@
 			projectRoot = "";
 			targets = (
 				0474C31F2C2C0FAC00C860A2 /* Travel Destinations */,
+				697224C0BE150C49D9F3D5E1 /* Travel Stickers MessagesExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -367,6 +486,21 @@
 				0474C32B2C2C0FAD00C860A2 /* Preview Assets.xcassets in Resources */,
 				5B666C572C4166FC003A6D6C /* GoogleService-Info.plist in Resources */,
 				0474C3282C2C0FAD00C860A2 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A4F88DEA754772011469B583 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5CB7DD88D979509DCDF40C95 /* borabora.png in Resources */,
+				6E1350352DAF02B0CAB48372 /* glaciernationalpark.png in Resources */,
+				C8CD9EC6732D9FA42CEFEB9E /* maldives.png in Resources */,
+				D675ACD7AEDC7C02ECB7FD1D /* paris.png in Resources */,
+				9E22CDEFACA7740B9C31CDF3 /* rome.png in Resources */,
+				C787C5699D329CEBA52D0F4A /* santorini.png in Resources */,
+				6D3325F0249C55EB59D47773 /* sydney.png in Resources */,
+				7E0A2461A8998D4253266007 /* tokyo.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,6 +534,7 @@
 				5B83E7482C58DB98009CFC8F /* TravelGalleryCollectionModel.swift in Sources */,
 				5B9FFEAC2C6E352400B12032 /* CustomVideoPlayer.swift in Sources */,
 				5B9FFEAE2C6E352400B12032 /* RemoteImageView.swift in Sources */,
+				5B9FFEB22C6E352400B12032 /* AppTheme.swift in Sources */,
 				04A6CB0B2C2C67E100668676 /* InsetGalleryView.swift in Sources */,
 				04043D742C2D612000E85AEC /* CreditsView.swift in Sources */,
 				04A6CAF42C2C246D00668676 /* GalleryView.swift in Sources */,
@@ -409,7 +544,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		93988D0BBAA7CCBA4E6740FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8AB1B34D4C85A58ECF0CD711 /* MessagesViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		20E6DDB4BDE5FCD390FDD3AF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Travel Stickers MessagesExtension";
+			target = 697224C0BE150C49D9F3D5E1 /* Travel Stickers MessagesExtension */;
+			targetProxy = 74BB2D1DE1F90BCA523B4C8E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		0474C32C2C2C0FAD00C860A2 /* Debug */ = {
@@ -540,7 +692,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Travel Destinations/Preview Content\"";
-				DEVELOPMENT_TEAM = 37VV2ST5BZ;
+				DEVELOPMENT_TEAM = QMWPPKCH92;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Travel Destinations/Info.plist";
@@ -573,7 +725,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Travel Destinations/Preview Content\"";
-				DEVELOPMENT_TEAM = 37VV2ST5BZ;
+				DEVELOPMENT_TEAM = QMWPPKCH92;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Travel Destinations/Info.plist";
@@ -597,6 +749,57 @@
 			};
 			name = Release;
 		};
+		4904D24B6924EDD1F751B2FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QMWPPKCH92;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Travel Stickers MessagesExtension/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zohaib.traveldestination.TravelStickersMessagesExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B903C05E55BCEAA589511F73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QMWPPKCH92;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Travel Stickers MessagesExtension/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zohaib.traveldestination.TravelStickersMessagesExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -614,6 +817,15 @@
 			buildConfigurations = (
 				0474C32F2C2C0FAD00C860A2 /* Debug */,
 				0474C3302C2C0FAD00C860A2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F4A6B9DD83B891FE2DB3E5DE /* Build configuration list for PBXNativeTarget "Travel Stickers MessagesExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4904D24B6924EDD1F751B2FA /* Release */,
+				B903C05E55BCEAA589511F73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
