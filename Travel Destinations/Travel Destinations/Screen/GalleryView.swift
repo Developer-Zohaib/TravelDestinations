@@ -235,7 +235,7 @@ struct GalleryView: View {
             }
 
             HStack(spacing: 10) {
-                shapeButton(.rounded, icon: "roundedrectangle")
+                shapeButton(.rounded, icon: "square")
                 shapeButton(.circle, icon: "circle")
                 shapeButton(.ticket, icon: "ticket")
             }
